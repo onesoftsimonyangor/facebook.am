@@ -45,13 +45,13 @@ class RegisterRepository
         return $this->response200($data);
     }
 
-    public function login(LoginRequest $request): JsonResponse|string
+    public function login(LoginRequest $request): JsonResponse
     {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
             $success['token'] = $user->createToken('MyApp')->accessToken;
-
-            return $success['token'] . $this->response200('User login successfully!');
+            $success = $success['token'];
+            return $this->response200(["Token: " . $success['token'], 'User login successfully!']);
         }
         return $this->response401('Unauthorised.');
     }
