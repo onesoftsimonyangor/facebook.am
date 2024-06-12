@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\API\ImageUploadController;
 use App\Http\Controllers\API\RegisterController;
+use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,3 +24,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('register', [RegisterController::class, 'register']);
 Route::post('login', [RegisterController::class, 'login']);
+
+Route::middleware('auth:api')->group(function () {
+    Route::resource('/user', UserController::class)->only('store', 'show', 'destroy');
+    Route::put('/user-update', [UserController::class, 'updateUser']);
+    Route::put('/change-password', [RegisterController::class, 'changePassword']);
+    Route::post('/user-logout', [RegisterController::class, 'logout']);
+    Route::post('/upload-mixed-media', [ImageUploadController::class, 'uploadMixedMedia']);
+});
