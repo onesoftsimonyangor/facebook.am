@@ -13,9 +13,13 @@ class ImageUploadController extends Controller
     {
         $uploadedPaths = [];
 
-        foreach ($request->file('images') as $image) {
-            $url = $this->storeAndRetrieveUrl($image);
-            $uploadedPaths[] = $url;
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $url = $this->storeAndRetrieveUrl($image);
+                $uploadedPaths[] = $url;
+            }
+        } else {
+            return response()->json(['error' => 'No files found'], 400);
         }
 
         return response()->json($uploadedPaths, 200);
