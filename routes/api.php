@@ -26,8 +26,11 @@ Route::post('register', [RegisterController::class, 'register']);
 Route::post('login', [RegisterController::class, 'login']);
 
 Route::middleware('auth:api')->group(function () {
-    Route::resource('/user', UserController::class)->only('store', 'show', 'destroy');
+    Route::resource('/user', UserController::class)->only('show', 'destroy');
+    Route::post('/upload-user-images', [UserController::class, 'store']);
+    Route::post('/add-user-main-image/{userImage}', [UserController::class, 'addMainImage']);
     Route::put('/user-update', [UserController::class, 'updateUser']);
+    Route::get('/user-images', [UserController::class, 'getUserImages']);
     Route::put('/change-password', [RegisterController::class, 'changePassword']);
     Route::post('/user-logout', [RegisterController::class, 'logout']);
     Route::post('/upload-mixed-media', [ImageUploadController::class, 'uploadMixedMedia']);

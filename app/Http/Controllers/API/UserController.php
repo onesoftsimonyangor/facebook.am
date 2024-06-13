@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use App\Models\UserImage;
 use App\Repositories\UserRepository;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -28,6 +29,16 @@ class UserController extends Controller
     public function store(StoreUserRequest $request): JsonResponse
     {
         return $this->response201($this->repository->create($request));
+    }
+
+    public function getUserImages(): JsonResponse
+    {
+        return $this->response200($this->repository->getUserImages());
+    }
+
+    public function addMainImage(UserImage $userImage): JsonResponse
+    {
+        return $this->response201($this->repository->addMainImage($userImage));
     }
 
     public function updateUser(UpdateUserRequest $request): JsonResponse

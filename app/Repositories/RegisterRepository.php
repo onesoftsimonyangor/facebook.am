@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Hash;
 
 class RegisterRepository
 {
-    use ApiResponse;
+
 
     protected User $userModel;
 
@@ -29,7 +29,6 @@ class RegisterRepository
         $data = $request->validated();
         $data['password'] = Hash::make($request->input('password'));
 
-        unset($data['confirm_password']);
         return User::create($data);
     }
 

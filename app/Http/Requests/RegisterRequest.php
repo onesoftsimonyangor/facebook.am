@@ -23,11 +23,11 @@ class RegisterRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:100'],
             'surname' => ['required', 'string', 'max:100'],
-            'email' => ['required', 'email', 'max:150', Rule::unique('users', 'email')],
             'phone' => ['required', 'numeric', 'digits_between:8,15'],
             'birth_date' => ['required', 'date', 'before_or_equal:' . now()->subYears(16)->format('Y-m-d')],
+            'email' => ['required', 'email', 'max:150', Rule::unique('users', 'email')],
             'password' => ['required', 'min:4'],
-            'confirm_password' => ['required', 'same:password', 'min:4'],
+            'confirm_password' => ['required', 'same:password'],
         ];
     }
 }

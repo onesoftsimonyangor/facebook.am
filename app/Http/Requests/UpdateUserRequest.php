@@ -24,7 +24,6 @@ class UpdateUserRequest extends FormRequest
             'images' => ['array'],
             'images.*.path' => ['required_with:images', 'string', "max:10000"],
             'images.*.file_type' => ['required_with:images', 'in:image,video', 'max:10000'],
-            'main_image_path' => ['string', 'in:' . implode(',', array_column($this->images, 'path'))],
             'name' => ['string', 'max:100'],
             'surname' => ['string', 'max:100'],
             'email' => ['email', 'max:150'],

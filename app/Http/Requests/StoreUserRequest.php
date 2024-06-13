@@ -23,7 +23,6 @@ class StoreUserRequest extends FormRequest
             'images' => ['required', 'array'],
             'images.*.path' => ['required_with:images', 'string', 'max:10000'],
             'images.*.file_type' => ['required_with:images', 'string', 'in:image,video', 'max:10000'],
-            'main_image_path' => ['string', 'in:' . implode(',', array_column($this->images, 'path'))],
         ];
     }
 }
