@@ -27,7 +27,7 @@ class UserRepository
         return $user->images;
     }
 
-    public function getUserById()
+    public function show()
     {
         $user = auth()->user();
         return $user->load('images');

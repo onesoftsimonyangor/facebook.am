@@ -24,7 +24,7 @@ class UserController extends Controller
     }
     public function show(): JsonResponse
     {
-        return $this->response200($this->repository->getUserById());
+        return $this->response200($this->repository->show());
     }
 
     public function store(StoreUserRequest $request): JsonResponse
