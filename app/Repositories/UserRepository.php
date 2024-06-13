@@ -6,6 +6,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Models\UserImage;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class UserRepository
@@ -17,11 +18,6 @@ class UserRepository
         $this->userModel = $userModel;
     }
 
-    public function getUserById(User $user): User
-    {
-        return $user->load('images');
-    }
-
     public function create(StoreUserRequest $request)
     {
         $images = $request->input('images');
@@ -29,6 +25,12 @@ class UserRepository
 
         $this->attachImages($user, $images);
         return $user->images;
+    }
+
+    public function getUserById()
+    {
+        $user = auth()->user();
+        return $user->load('images');
     }
 
     public function getUserImages()

@@ -10,6 +10,7 @@ use App\Models\UserImage;
 use App\Repositories\UserRepository;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -21,9 +22,9 @@ class UserController extends Controller
     {
         $this->repository = $repository;
     }
-    public function show(User $user): JsonResponse
+    public function show(): JsonResponse
     {
-        return $this->response200($this->repository->getUserById($user));
+        return $this->response200($this->repository->getUserById());
     }
 
     public function store(StoreUserRequest $request): JsonResponse
