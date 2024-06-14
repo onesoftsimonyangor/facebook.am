@@ -28,4 +28,11 @@ class UpdateUserRequest extends FormRequest
             'birth_date' => ['date', 'before_or_equal:' . now()->subYears(16)->format('Y-m-d')],
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'birth_date.before_or_equal' => 'You must be over 16 years old.',
+        ];
+    }
 }
