@@ -30,4 +30,11 @@ class RegisterRequest extends FormRequest
             'confirm_password' => ['required', 'same:password'],
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'birth_date.before_or_equal' => 'You must be over 16 years old.',
+        ];
+    }
 }
