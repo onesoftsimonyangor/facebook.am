@@ -27,7 +27,8 @@ class UserRepository
         }
 
         $this->attachImages($user, $images);
-        return $user->images;
+
+        return 'Success';
     }
 
     public function show()
@@ -68,7 +69,8 @@ class UserRepository
             }
         }
         $user->update($request->only('name', 'surname', 'email', 'phone', 'birth_date'));
-        return $user;
+
+        return 'Success';
     }
 
     public function attachImages(User $user, $images): void
@@ -81,8 +83,9 @@ class UserRepository
         return $userImage->delete();
     }
 
-    public function delete(User $user): ?bool
+    public function delete(): ?bool
     {
+        $user = auth()->user();
         return $user->delete();
     }
 }

@@ -53,9 +53,9 @@ class UserController extends Controller
         return $this->response204();
     }
 
-    public function destroy(User $user): JsonResponse
+    public function destroy(): JsonResponse
     {
-        $this->repository->delete($user);
+        $this->repository->delete();
         return $this->response204();
     }
 }
