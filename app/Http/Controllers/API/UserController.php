@@ -47,6 +47,12 @@ class UserController extends Controller
         return $this->response200($this->repository->update($request));
     }
 
+    public function deleteUserImage(UserImage $userImage): JsonResponse
+    {
+        $this->repository->deleteUserImage($userImage);
+        return $this->response204();
+    }
+
     public function destroy(User $user): JsonResponse
     {
         $this->repository->delete($user);

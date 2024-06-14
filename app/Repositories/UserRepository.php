@@ -22,6 +22,10 @@ class UserRepository
         $images = $request->input('images');
         $user = auth()->user();
 
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
         $this->attachImages($user, $images);
         return $user->images;
     }
@@ -55,7 +59,6 @@ class UserRepository
 
     public function update(UpdateUserRequest $request)
     {
-        $images = $request->input('images');
         $user = auth()->user();
 
         if ($request->has('email') && $request->input('email') !== $user->email) {
@@ -64,23 +67,18 @@ class UserRepository
                 throw new \Exception('Email already exists in the database');
             }
         }
-
-        try {
-            DB::beginTransaction();
-            $user->update($request->only(['name', 'surname', 'email', 'phone', 'birth_date']));
-            $this->attachImages($user, $images);
-            DB::commit();
-            return $user->load('images');
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            throw $exception;
-        }
+        $user->update($request->only('name', 'surname', 'email', 'phone', 'birth_date'));
+        return $user;
     }
 
     public function attachImages(User $user, $images): void
     {
-        $user->images()->delete();
         $user->images()->createMany($images);
+    }
+
+    public function deleteUserImage(UserImage $userImage): ?bool
+    {
+        return $userImage->delete();
     }
 
     public function delete(User $user): ?bool
