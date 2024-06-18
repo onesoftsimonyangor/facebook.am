@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('path');
             $table->string('file_type');
             $table->boolean('main_image')->default(false);
+            $table->boolean('bg_image')->default(false);
             $table->timestamps();
         });
     }

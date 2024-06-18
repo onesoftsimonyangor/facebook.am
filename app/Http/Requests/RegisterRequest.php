@@ -25,7 +25,14 @@ class RegisterRequest extends FormRequest
             'surname' => ['required', 'string', 'max:100'],
             'phone' => ['required', 'numeric', 'digits_between:8,15'],
             'birth_date' => ['required', 'date', 'before_or_equal:' . now()->subYears(16)->format('Y-m-d')],
-            'email' => ['required', 'email', 'max:150', Rule::unique('users', 'email')],
+            'email' => [
+                'required',
+                'email',
+                'max:150',
+                Rule::unique('users', 'email')->where(function ($query) {
+                    return $query->whereNotNull('email_verified_at');
+                }),
+            ],
             'password' => ['required', 'min:4'],
             'confirm_password' => ['required', 'same:password'],
         ];

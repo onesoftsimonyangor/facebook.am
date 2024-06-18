@@ -9,6 +9,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Repositories\RegisterRepository;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
@@ -59,6 +60,11 @@ class RegisterController extends Controller
     public function register(RegisterRequest $request): JsonResponse
     {
         return $this->response201($this->repository->register($request));
+    }
+
+    public function verifyEmail(Request $request)
+    {
+        return $this->response201($this->repository->verifyEmail($request));
     }
 
     public function login(LoginRequest $request): JsonResponse

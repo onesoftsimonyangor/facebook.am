@@ -5,12 +5,10 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Models\User;
 use App\Models\UserImage;
 use App\Repositories\UserRepository;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -40,6 +38,11 @@ class UserController extends Controller
     public function addMainImage(UserImage $userImage): JsonResponse
     {
         return $this->response201($this->repository->addMainImage($userImage));
+    }
+
+    public function addBgImage(UserImage $userImage): JsonResponse
+    {
+        return $this->response201($this->repository->addBgImage($userImage));
     }
 
     public function updateUser(UpdateUserRequest $request): JsonResponse

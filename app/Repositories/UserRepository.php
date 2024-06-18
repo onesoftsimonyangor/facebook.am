@@ -6,7 +6,6 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Models\UserImage;
-use Illuminate\Support\Facades\DB;
 
 class UserRepository
 {
@@ -53,6 +52,21 @@ class UserRepository
 
         $userImage->update([
             'main_image' => true
+        ]);
+
+        return 'Success';
+    }
+
+    public function addBgImage(UserImage $userImage)
+    {
+
+        $user = auth()->user();
+        $user->images()->update([
+            'bg_image' => false
+        ]);
+
+        $userImage->update([
+            'bg_image' => true
         ]);
 
         return 'Success';
