@@ -3,10 +3,7 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 class ResetPasswordMail extends Mailable
@@ -22,10 +19,10 @@ class ResetPasswordMail extends Mailable
 
     public function build()
     {
-        return $this->view('emails.reset-password')
+        return $this->markdown('emails.reset-password')
             ->with([
                 'token' => $this->token,
-            ])
-            ->subject('Password Reset Request'); // Email subject
+                'url' => url('/reset-password/'.$this->token)
+            ]);
     }
 }

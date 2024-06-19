@@ -66,7 +66,7 @@ class RegisterRepository
             'email' => $data['email'],
             'password' => $data['password'],
             'verification_code' => $verificationCode,
-            'verification_code_expires_at' => Carbon::now()->addMinutes(1),
+            'verification_code_expires_at' => Carbon::now()->addMinutes(3),
         ];
 
         $user = User::create($userData);

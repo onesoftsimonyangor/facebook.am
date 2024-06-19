@@ -14,5 +14,6 @@ class UserImage extends Model
         'path',
         'file_type',
         'main_image',
+        'bg_image',
     ];
 }

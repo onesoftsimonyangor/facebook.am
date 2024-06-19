@@ -16,3 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('password/reset/success', function () {
+    return view('auth.success');
+})->name('password.reset.success');

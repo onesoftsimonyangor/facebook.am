@@ -1,10 +1,9 @@
 <?php
 
+use App\Http\Controllers\API\ForgotPasswordController;
 use App\Http\Controllers\API\ImageUploadController;
 use App\Http\Controllers\API\RegisterController;
 use App\Http\Controllers\API\UserController;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,14 +17,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
-
 
 Route::post('/register', [RegisterController::class, 'register']);
-Route::post('/login', [RegisterController::class, 'login']);
+Route::post('/login', [RegisterController::class, 'login'])->name('login');
 Route::post('/verify-email', [RegisterController::class, 'verifyEmail']);
+
+Route::post('/forgot-password', [ForgotPasswordController::class, 'forgotPassword']);
+Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('password/update', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
 
 Route::middleware('auth:api')->group(function () {
     Route::get('/user-show', [UserController::class, 'show']);
