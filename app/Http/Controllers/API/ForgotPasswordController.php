@@ -47,7 +47,7 @@ class ForgotPasswordController extends Controller
         return response()->json(['message' => 'Password reset link sent']);
     }
 
-    public function showResetForm(Request $request, $token = null)
+    public function showResetForm($token = null)
     {
         $tokenData = DB::table('password_resets')->where('token', $token)->first();
 
