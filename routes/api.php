@@ -34,6 +34,7 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/user-update', [UserController::class, 'updateUser']);
     Route::get('/user-images', [UserController::class, 'getUserImages']);
     Route::put('/change-password', [RegisterController::class, 'changePassword']);
+    Route::post('/user-search', [UserController::class, 'searchUser']);
     Route::post('/user-logout', [RegisterController::class, 'logout']);
     Route::delete('/user-image-delete/{userImage}', [UserController::class, 'deleteUserImage']);
     Route::delete('/user-delete', [UserController::class, 'destroy']);

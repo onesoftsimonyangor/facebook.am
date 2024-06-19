@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SearchUserRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\UserImage;
@@ -48,6 +49,11 @@ class UserController extends Controller
     public function updateUser(UpdateUserRequest $request): JsonResponse
     {
         return $this->response200($this->repository->update($request));
+    }
+
+    public function searchUser(SearchUserRequest $request): JsonResponse
+    {
+        return $this->response200($this->repository->searchUser($request));
     }
 
     public function deleteUserImage(UserImage $userImage): JsonResponse

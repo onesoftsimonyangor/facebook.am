@@ -2,10 +2,12 @@
 
 namespace App\Repositories;
 
+use App\Http\Requests\SearchUserRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Models\UserImage;
+use Illuminate\Support\Facades\DB;
 
 class UserRepository
 {
@@ -90,6 +92,23 @@ class UserRepository
     public function attachImages(User $user, $images): void
     {
         $user->images()->createMany($images);
+    }
+
+    public function searchUser(SearchUserRequest $request)
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        $search = $request->input('search');
+        $searchUser = User::where('name', 'LIKE', "%{$search}%")
+            ->orWhere('surname', 'LIKE', "%{$search}%" )
+            ->orWhere('phone', 'LIKE', "%{$search}%" )
+            ->orWhere('email', 'LIKE', "%{$search}%" )
+            ->orWhere(DB::raw("concat(name, ' ', surname)"), 'LIKE', "%{$search}%" )
+            ->get();
+
+        return $searchUser;
     }
 
     public function deleteUserImage(UserImage $userImage): ?bool
