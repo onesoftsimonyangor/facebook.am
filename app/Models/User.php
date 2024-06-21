@@ -57,4 +57,29 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(UserImage::class);
     }
+
+    public function friends()
+    {
+        return $this->belongsToMany(User::class, 'user_friends', 'user_id', 'friend_id');
+    }
+
+    public function toArray()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'surname' => $this->surname,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'birth_date' => $this->birth_date,
+            'images' => $this->images,
+            'friends' => $this->friends->map(function ($friend) {
+                return [
+                    'id' => $friend->id,
+                    'name' => $friend->name,
+                    'surname' => $friend->surname,
+                ];
+            }),
+        ];
+    }
 }

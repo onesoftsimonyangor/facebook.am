@@ -52,6 +52,15 @@ trait ApiResponse
      * @param $message
      * @return JsonResponse
      */
+    public function response400($message): JsonResponse
+    {
+        return response()->json(compact('message'), Response::HTTP_BAD_REQUEST);
+    }
+
+    /**
+     * @param $message
+     * @return JsonResponse
+     */
     public function response401($message): JsonResponse
     {
         return response()->json(compact('message'), Response::HTTP_UNAUTHORIZED);

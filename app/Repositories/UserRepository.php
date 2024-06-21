@@ -61,7 +61,6 @@ class UserRepository
 
     public function addBgImage(UserImage $userImage)
     {
-
         $user = auth()->user();
         $user->images()->update([
             'bg_image' => false
@@ -111,9 +110,13 @@ class UserRepository
         return $searchUser;
     }
 
-    public function deleteUserImage(UserImage $userImage): ?bool
+    public function deleteUserImage(UserImage $userImage)
     {
-        return $userImage->delete();
+        $user = auth()->user();
+        if ($user) {
+            return $userImage->delete();
+        }
+        return response()->json(['error' => 'Unauthorized'], 401);
     }
 
     public function delete(): ?bool
