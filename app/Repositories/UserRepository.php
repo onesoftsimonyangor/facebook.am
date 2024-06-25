@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Http\Requests\SearchUserRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\Friend;
 use App\Models\User;
 use App\Models\UserImage;
 use Illuminate\Support\Facades\DB;
@@ -35,7 +36,20 @@ class UserRepository
     public function show()
     {
         $user = auth()->user();
-        return $user->load('images');
+        $user->load('images', 'blockUsers');
+
+        $friends = $this->getAllFriends($user);
+        $user->setRelation('friends', $friends);
+
+        return $user;
+    }
+
+    protected function getAllFriends($user)
+    {
+        $friends1 = $user->belongsToMany(User::class, 'user_friends', 'user_id', 'friend_id')->get();
+        $friends2 = $user->belongsToMany(User::class, 'user_friends', 'friend_id', 'user_id')->get();
+
+        return $friends1->merge($friends2)->unique();
     }
 
     public function getUserImages()
@@ -99,15 +113,25 @@ class UserRepository
         if (!$user) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+
+        $blockedUsers = $user->blockUsers()->pluck('block_id');
+
+        $blockedByUsers = DB::table('block_users')->where('block_id', $user->id)->pluck('user_id');
+
         $search = $request->input('search');
-        $searchUser = User::where('name', 'LIKE', "%{$search}%")
-            ->orWhere('surname', 'LIKE', "%{$search}%" )
-            ->orWhere('phone', 'LIKE', "%{$search}%" )
-            ->orWhere('email', 'LIKE', "%{$search}%" )
-            ->orWhere(DB::raw("concat(name, ' ', surname)"), 'LIKE', "%{$search}%" )
+
+        $searchUser = User::where(function ($query) use ($search) {
+            $query->where('name', 'LIKE', "%{$search}%")
+                ->orWhere('surname', 'LIKE', "%{$search}%")
+                ->orWhere('phone', 'LIKE', "%{$search}%")
+                ->orWhere('email', 'LIKE', "%{$search}%")
+                ->orWhere(DB::raw("concat(name, ' ', surname)"), 'LIKE', "%{$search}%");
+        })
+            ->whereNotIn('id', $blockedUsers)
+            ->whereNotIn('id', $blockedByUsers)
             ->get();
 
-        return $searchUser;
+        return response()->json($searchUser);
     }
 
     public function deleteUserImage(UserImage $userImage)

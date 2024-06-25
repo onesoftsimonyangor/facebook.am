@@ -38,5 +38,23 @@ class FriendController extends Controller
         return $this->response200($this->repository->removeFriend($id));
     }
 
-}
+    public function showFriends(): JsonResponse
+    {
+        return $this->response200($this->repository->showFriends());
+    }
 
+    public function blockUser($userId): JsonResponse
+    {
+        return $this->response200($this->repository->blockUser($userId));
+    }
+
+    public function showBlockUsers(): JsonResponse
+    {
+        return $this->response200($this->repository->showBlockUsers());
+    }
+
+    public function unblockUser($userId): JsonResponse
+    {
+        return $this->response200($this->repository->unblockUser($userId));
+    }
+}

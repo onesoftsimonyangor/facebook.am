@@ -60,19 +60,37 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function friends()
     {
-        return $this->belongsToMany(User::class, 'user_friends', 'user_id', 'friend_id');
+        return $this->belongsToMany(User::class, 'user_friends', 'user_id', 'friend_id')
+            ->withPivot('friend_id')
+            ->union(
+                $this->belongsToMany(User::class, 'user_friends', 'friend_id', 'user_id')
+                    ->withPivot('user_id')
+            );
+    }
+
+    public function blockUsers()
+    {
+        return $this->belongsToMany(User::class, 'block_users', 'user_id', 'block_id');
     }
 
     public function toArray()
     {
-        return [
+        $array = [
             'id' => $this->id,
             'name' => $this->name,
             'surname' => $this->surname,
             'email' => $this->email,
             'phone' => $this->phone,
             'birth_date' => $this->birth_date,
-            'images' => $this->images,
+            'images' => $this->images->map(function ($images) {
+                return [
+                    'id' => $images->id,
+                    'path' => $images->path,
+                    'file_type' => $images->file_type,
+                    'main_image' => $images->main_image,
+                    'bg_image' => $images->bg_image,
+                ];
+            }),
             'friends' => $this->friends->map(function ($friend) {
                 return [
                     'id' => $friend->id,
@@ -81,5 +99,17 @@ class User extends Authenticatable implements MustVerifyEmail
                 ];
             }),
         ];
+
+        if ($this->relationLoaded('blockUsers')) {
+            $array['block_users'] = $this->blockUsers->map(function ($blockUser) {
+                return [
+                    'id' => $blockUser->id,
+                    'name' => $blockUser->name,
+                    'surname' => $blockUser->surname,
+                ];
+            });
+        }
+
+        return $array;
     }
 }

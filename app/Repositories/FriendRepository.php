@@ -25,6 +25,10 @@ class FriendRepository
             return $this->response400("You can't become your own friend");
         }
 
+        if ($user->blockUsers()->find($id)) {
+            return $this->response400('This user has blocked you');
+        }
+
         if (Friend::where('sender_id', $user->id)->where('receiver_id', $id)->exists()) {
             return $this->response400('Friend request already sent');
         }
@@ -38,7 +42,7 @@ class FriendRepository
             'receiver_id' => $id,
         ]);
 
-        return $this->response200('Friend request sent successfully');
+        return 'Friend request sent successfully';
     }
 
     public function acceptFriendRequest($senderId)
@@ -58,11 +62,10 @@ class FriendRepository
         }
 
         $user->friends()->attach($senderId);
-        $user::find($senderId)->friends()->attach($user->id);
 
         $friendRequest->delete();
 
-        return $this->response200('Friend request accepted successfully');
+        return 'Friend request accepted successfully';
     }
 
     public function rejectFriendRequest($senderId)
@@ -98,7 +101,7 @@ class FriendRepository
 
         $friendRequest->delete();
 
-        return $this->response200('Friend request reject successfully');
+        return 'Friend request reject successfully';
     }
 
 
@@ -115,6 +118,61 @@ class FriendRepository
         }
 
         $user->friends()->detach([$id]);
-        return $this->response200('Friend removed successfully');
+        return 'Friend removed successfully';
+    }
+
+    public function showFriends()
+    {
+        $user = auth()->user();
+        return $user->load('friends');
+    }
+
+    public function blockUser($userId)
+    {
+        $user = auth()->user();
+
+        if (!$user) {
+            return $this->response401('Unauthorized');
+        }
+
+        if ($user->blockUsers()->find($userId)) {
+            return $this->response400('You have already blocked this user');
+        }
+
+        if ($user->id == $userId) {
+            return $this->response400("You can't block yourself");
+        }
+
+        if ($user->friends()->find($userId)) {
+            $user->friends()->detach($userId);
+            $user::find($userId)->friends()->detach($user->id);
+        }
+
+        $user->blockUsers()->attach($userId);
+
+        return 'User blocking successfully';
+    }
+
+    public function showBlockUsers()
+    {
+        $user = auth()->user();
+        return $user->load('blockUsers');
+    }
+
+    public function unblockUser($userId)
+    {
+        $user = auth()->user();
+
+        if (!$user) {
+            return $this->response401('Unauthorized');
+        }
+
+        if (!$user->blockUsers()->find($userId)) {
+            return $this->response400('You have not blocked this user');
+        }
+
+        $user->blockUsers()->detach($userId);
+
+        return 'User unblocking successfully';
     }
 }

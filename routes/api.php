@@ -46,6 +46,12 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/reject-friend-request/{senderId}', [FriendController::class, 'rejectFriendRequest']);
     Route::post('/remove-friend/{id}', [FriendController::class, 'removeFriend']);
 
+    Route::get('/user-friends', [FriendController::class, 'showFriends']);
+
+    Route::post('/block-user/{userId}', [FriendController::class, 'blockUser']);
+    Route::get('/block-users', [FriendController::class, 'showBlockUsers']);
+    Route::post('/unblock-user/{userId}', [FriendController::class, 'unblockUser']);
+
     Route::post('/user-logout', [RegisterController::class, 'logout']);
     Route::delete('/user-image-delete/{userImage}', [UserController::class, 'deleteUserImage']);
     Route::delete('/user-delete', [UserController::class, 'destroy']);
