@@ -45,6 +45,32 @@ class FriendRepository
         return 'Friend request sent successfully';
     }
 
+    public function getSendFriendRequests()
+    {
+        $user = auth()->user();
+
+        if (!$user) {
+            return $this->response401('Unauthorized');
+        }
+
+        $receivedRequests = Friend::where('receiver_id', $user->id)
+            ->with(['sender.mainImage'])
+            ->get();
+
+        $formattedRequests = $receivedRequests->map(function($request) {
+            return [
+                'sender' => [
+                    'id' => $request->sender->id,
+                    'name' => $request->sender->name,
+                    'surname' => $request->sender->surname,
+                    'main_image' => $request->sender->mainImage ? $request->sender->mainImage->path : null,
+                ],
+            ];
+        });
+
+        return $formattedRequests;
+    }
+
     public function acceptFriendRequest($senderId)
     {
         $user = auth()->user();

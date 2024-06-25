@@ -23,6 +23,11 @@ class FriendController extends Controller
         return $this->response200($this->repository->sendFriendRequest($id));
     }
 
+    public function getSendFriendRequests(): JsonResponse
+    {
+        return $this->response200($this->repository->getSendFriendRequests());
+    }
+
     public function acceptFriendRequest($senderId): JsonResponse
     {
         return $this->response200($this->repository->acceptFriendRequest($senderId));

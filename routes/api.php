@@ -41,6 +41,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/user-search', [UserController::class, 'searchUser']);
 
     Route::post('/send-friend-request/{id}', [FriendController::class, 'sendFriendRequest']);
+    Route::get('/send-friend-requests', [FriendController::class, 'getSendFriendRequests']);
     Route::post('/accept-friend-request/{senderId}', [FriendController::class, 'acceptFriendRequest']);
 
     Route::post('/reject-friend-request/{senderId}', [FriendController::class, 'rejectFriendRequest']);
