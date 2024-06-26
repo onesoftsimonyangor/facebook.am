@@ -150,7 +150,22 @@ class FriendRepository
     public function showFriends()
     {
         $user = auth()->user();
-        return $user->load('friends');
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $friends = $user->friends()->with(['mainImage'])->get();
+
+        $formattedFriends = $friends->map(function($friend) {
+            return [
+                'id' => $friend->id,
+                'name' => $friend->name,
+                'surname' => $friend->surname,
+                'main_image' => $friend->mainImage ? $friend->mainImage->path : null,
+            ];
+        });
+
+        return $formattedFriends;
     }
 
     public function blockUser($userId)
@@ -182,7 +197,23 @@ class FriendRepository
     public function showBlockUsers()
     {
         $user = auth()->user();
-        return $user->load('blockUsers');
+
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $blockUsers = $user->blockUsers()->with(['mainImage'])->get();
+
+        $formattedBlockUsers = $blockUsers->map(function($blockUser) {
+            return [
+                'id' => $blockUser->id,
+                'name' => $blockUser->name,
+                'surname' => $blockUser->surname,
+                'main_image' => $blockUser->mainImage ? $blockUser->mainImage->path : null,
+            ];
+        });
+
+        return $formattedBlockUsers;
     }
 
     public function unblockUser($userId)
