@@ -97,10 +97,12 @@ class User extends Authenticatable implements MustVerifyEmail
                 ];
             }),
             'friends' => $this->friends->map(function ($friend) {
+                $friendId = is_array($friend) ? $friend['id'] : $friend->id;
                 return [
-                    'id' => $friend->id,
-                    'name' => $friend->name,
-                    'surname' => $friend->surname,
+                    'id' => $friendId,
+                    'name' => $friend['name'] ?? $friend->name,
+                    'surname' => $friend['surname'] ?? $friend->surname,
+                    'main_image' => $friend['main_image'] ?? null,
                 ];
             }),
         ];
@@ -111,6 +113,7 @@ class User extends Authenticatable implements MustVerifyEmail
                     'id' => $blockUser->id,
                     'name' => $blockUser->name,
                     'surname' => $blockUser->surname,
+                    'main_image' => $blockUser['main_image'] ?? null,
                 ];
             });
         }

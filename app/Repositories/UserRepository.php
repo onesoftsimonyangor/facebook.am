@@ -36,18 +36,27 @@ class UserRepository
     public function show()
     {
         $user = auth()->user();
-        $user->load('images', 'blockUsers');
+        $user->load('images');
 
-        $friends = $this->getAllFriends($user);
-        $user->setRelation('friends', $friends);
+        $friends = $this->getAllFriends($user)->take(20);
+        $formattedFriends = $friends->map(function ($friend) {
+            return [
+                'id' => $friend->id,
+                'name' => $friend->name,
+                'surname' => $friend->surname,
+                'main_image' => $friend->mainImage ? $friend->mainImage->path : null,
+            ];
+        });
+
+        $user->setRelation('friends', $formattedFriends);
 
         return $user;
     }
 
     protected function getAllFriends($user)
     {
-        $friends1 = $user->belongsToMany(User::class, 'user_friends', 'user_id', 'friend_id')->get();
-        $friends2 = $user->belongsToMany(User::class, 'user_friends', 'friend_id', 'user_id')->get();
+        $friends1 = $user->belongsToMany(User::class, 'user_friends', 'user_id', 'friend_id')->with('mainImage')->get();
+        $friends2 = $user->belongsToMany(User::class, 'user_friends', 'friend_id', 'user_id')->with('mainImage')->get();
 
         return $friends1->merge($friends2)->unique();
     }
